@@ -46,7 +46,7 @@ class QLearn {
       auto v = GetQ(state2, static_cast<Direction>(i));
       maxqnew = std::max(v, maxqnew);
     }
-    q[key] = q[key] + 0.4 * (reward + (0.7 * maxqnew) - q[key]);
+    q[key] = q[key] + 0.5 * (reward + (0 * maxqnew) - q[key]);
     // for (auto r : q) {
     //  std::cout << r.first.first << " " << DToS(r.first.second) << " = "
     //            << r.second << std::endl;
@@ -264,7 +264,7 @@ int main() {
     state = GetState(b.player_, b.food_);
     auto reward = b.score() - previous_score;
 
-    if (stop || previous_score < 100000) {
+    if (stop || previous_score < 150000) {
       q.Learn(previous_state, d, reward, state);
       stop = true;
     }
