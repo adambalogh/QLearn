@@ -9,6 +9,20 @@
 
 #include <ncurses.h>
 
+std::string DToS(int n) {
+  switch (n) {
+    case 0:
+      return "UP";
+    case 1:
+      return "DOWN";
+    case 2:
+      return "LEFT";
+    case 3:
+      return "RIGHT";
+  }
+  return "error";
+}
+
 typedef enum { UP, DOWN, LEFT, RIGHT, NUM_DIRECTIONS } Direction;
 
 class QLearn {
@@ -32,7 +46,11 @@ class QLearn {
       auto v = GetQ(state2, static_cast<Direction>(i));
       maxqnew = std::max(v, maxqnew);
     }
-    q[key] = q[key] + 0.3 * (reward + 0.8 * maxqnew - q[key]);
+    q[key] = q[key] + 0.4 * (reward + (0.7 * maxqnew) - q[key]);
+    // for (auto r : q) {
+    //  std::cout << r.first.first << " " << DToS(r.first.second) << " = "
+    //            << r.second << std::endl;
+    //}
     return 0;
   }
 
@@ -235,21 +253,24 @@ int main() {
   Board b;
   QLearn q{0.05, 0.1, 0.9};
 
-  int previous_score = 0;
-  std::string previous_state;
+  int previous_score = b.score();
+  std::string previous_state = GetState(b.player_, b.food_);
   bool stop = false;
   std::string state;
+
   while (true) {
-    previous_state = GetState(b.player_, b.food_);
     auto d = q.ChooseAction(previous_state);
     b.Move(d);
     state = GetState(b.player_, b.food_);
     auto reward = b.score() - previous_score;
+
     if (stop || previous_score < 100000) {
       q.Learn(previous_state, d, reward, state);
       stop = true;
     }
+
     previous_score = b.score();
+    previous_state = state;
     DrawBoard(b);
     usleep(50000);
   }
