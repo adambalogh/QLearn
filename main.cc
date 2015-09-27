@@ -89,16 +89,18 @@ class QLearn {
   double gamma_;
 };
 
-struct Player {
+struct Character {
   int x;
   int y;
-  Player(int x, int y) : x(x), y(y) {}
+  Character(int x, int y) : x(x), y(y) {}
 };
 
-struct Food {
-  int x;
-  int y;
-  Food(int x, int y) : x(x), y(y) {}
+struct Player : public Character {
+  Player(int x, int y) : Character(x, y) {}
+};
+
+struct Food : public Character {
+  Food(int x, int y) : Character(x, y) {}
 };
 
 class Board {
@@ -264,10 +266,7 @@ int main() {
     state = GetState(b.player_, b.food_);
     auto reward = b.score() - previous_score;
 
-    if (stop || previous_score < 150000) {
-      q.Learn(previous_state, d, reward, state);
-      stop = true;
-    }
+    q.Learn(previous_state, d, reward, state);
 
     previous_score = b.score();
     previous_state = state;
