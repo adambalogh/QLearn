@@ -136,7 +136,7 @@ class Board {
       score_ += 100;
       food_ = MakeFood();
     }
-    score_ -= 3;
+    score_ -= 1;
 
     UpdateCells();
     return true;
