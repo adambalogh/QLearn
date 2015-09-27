@@ -197,6 +197,13 @@ void Draw(const Board& b) {
 }
 
 std::string GetState(Player p, Food f) {
+  if (p.x == f.x) {
+    if (p.y > f.y) {
+      return "LEFT";
+    } else {
+      return "RIGHT";
+    }
+  }
   if (p.x > f.x) {
     if (p.y == f.y) {
       return "UP";
